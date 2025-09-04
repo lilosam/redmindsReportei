@@ -1,0 +1,35 @@
+# Backend Dependencies
+express==4.18.2
+cors==2.8.5
+node-fetch==2.6.7
+
+# Development Dependencies
+http-server==14.1.1
+
+# Node.js Version
+node>=14.0.0
+
+# Environment
+PORT=3000
+REPORTEI_API_TOKEN=JRqzu0bOWhfOWekpuieXiiX06dfZtyp3zyCW5Sys
+
+# Frontend Dependencies (CDN)
+# Estas dependências são carregadas via CDN, não precisam ser instaladas
+# - Chart.js para gráficos
+# - Moment.js para manipulação de datas
+
+# Instalação
+# npm install express cors node-fetch
+# npm install -g http-server  # Para desenvolvimento
+
+# Versões específicas das dependências do package.json
+{
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "node-fetch": "^2.6.7"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
