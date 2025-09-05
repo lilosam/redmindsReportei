@@ -402,7 +402,7 @@
     height: 12px;
     border-radius: 50%;
     background: var(--success-gradient);
-    box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.2);
+    box-shadow: 0 0 0 3px rgba(139, 38, 53, 0.2);
     animation: pulse 2s infinite;
 }
 
@@ -597,7 +597,7 @@
 .search-input:focus {
     outline: none;
     border-color: transparent;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1), var(--shadow-lg);
+    box-shadow: 0 0 0 3px rgba(139, 38, 53, 0.1), var(--shadow-lg);
     background: linear-gradient(135deg, var(--white) 0%, var(--gray-50) 100%);
 }
 
@@ -827,11 +827,11 @@
 }
 
 :root {
-    /* Cores Primárias */
-    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    --warning-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    /* Cores Primárias - Tons de Marsala */
+    --primary-gradient: linear-gradient(135deg, #8B2635 0%, #6B1E3F 100%);
+    --secondary-gradient: linear-gradient(135deg, #B83B5E 0%, #8B2635 100%);
+    --success-gradient: linear-gradient(135deg, #6B1E3F 0%, #8B2635 100%);
+    --warning-gradient: linear-gradient(135deg, #D2691E 0%, #CD853F 100%);
     
     /* Cores Neutras */
     --white: #ffffff;
@@ -1478,7 +1478,7 @@ body {
 /* =============== SELEÇÃO DE TEXTO =============== */
 
 ::selection {
-    background: rgba(102, 126, 234, 0.2);
+    background: rgba(139, 38, 53, 0.2);
     color: var(--gray-800);
 }
 
@@ -1487,6 +1487,6 @@ body {
 button:focus,
 input:focus,
 a:focus {
-    outline: 3px solid rgba(102, 126, 234, 0.3);
+    outline: 3px solid rgba(139, 38, 53, 0.3);
     outline-offset: 2px;
 }
