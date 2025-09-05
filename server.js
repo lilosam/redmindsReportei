@@ -9,6 +9,19 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('src')); // Servir arquivos estáticos da pasta src
 
+// Rotas específicas para arquivos estáticos (para garantir que funcionem no Vercel)
+app.get('/styles.css', (req, res) => {
+    res.sendFile(__dirname + '/src/styles.css');
+});
+
+app.get('/script.js', (req, res) => {
+    res.sendFile(__dirname + '/src/script.js');
+});
+
+app.get('/favicon.ico', (req, res) => {
+    res.sendFile(__dirname + '/src/favicon.ico');
+});
+
 // Rota para a página inicial
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/src/index.html');
