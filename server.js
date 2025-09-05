@@ -18,6 +18,22 @@ app.get('/script.js', (req, res) => {
     res.sendFile(__dirname + '/src/script.js');
 });
 
+app.get('/reportsDashboard.js', (req, res) => {
+    res.sendFile(__dirname + '/src/reportsDashboard.js');
+});
+
+app.get('/report-viewer.js', (req, res) => {
+    res.sendFile(__dirname + '/src/report-viewer.js');
+});
+
+app.get('/customDashboard.js', (req, res) => {
+    res.sendFile(__dirname + '/src/customDashboard.js');
+});
+
+app.get('/campaign-details.js', (req, res) => {
+    res.sendFile(__dirname + '/src/campaign-details.js');
+});
+
 app.get('/favicon.ico', (req, res) => {
     res.sendFile(__dirname + '/src/favicon.ico');
 });
@@ -42,6 +58,10 @@ app.get('/campaign-details.html', (req, res) => {
 
 app.get('/custom-dashboard.html', (req, res) => {
     res.sendFile(__dirname + '/src/custom-dashboard.html');
+});
+
+app.get('/debug.html', (req, res) => {
+    res.sendFile(__dirname + '/src/debug.html');
 });
 
 // Rota catch-all para outras páginas HTML
