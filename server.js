@@ -22,9 +22,33 @@ app.get('/favicon.ico', (req, res) => {
     res.sendFile(__dirname + '/src/favicon.ico');
 });
 
+// Rota genérica para servir arquivos JavaScript
+app.get('/*.js', (req, res) => {
+    const fileName = req.path;
+    const filePath = __dirname + '/src' + fileName;
+    res.sendFile(filePath, (err) => {
+        if (err) {
+            console.error('Erro ao servir arquivo JS:', fileName, err);
+            res.status(404).send('Arquivo JavaScript não encontrado');
+        }
+    });
+});
+
 // Rota para a página inicial
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/src/index.html');
+});
+
+// Rota genérica para servir páginas HTML
+app.get('/*.html', (req, res) => {
+    const fileName = req.path;
+    const filePath = __dirname + '/src' + fileName;
+    res.sendFile(filePath, (err) => {
+        if (err) {
+            console.error('Erro ao servir arquivo:', fileName, err);
+            res.status(404).send('Página não encontrada');
+        }
+    });
 });
 
 // Middleware para log de todas as requisições
