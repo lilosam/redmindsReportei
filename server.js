@@ -39,9 +39,26 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/src/index.html');
 });
 
-// Rota genérica para servir páginas HTML
+// Rota genérica para servir páginas HTML (com ou sem query parameters)
+app.get('/reports-dashboard.html', (req, res) => {
+    res.sendFile(__dirname + '/src/reports-dashboard.html');
+});
+
+app.get('/report-viewer.html', (req, res) => {
+    res.sendFile(__dirname + '/src/report-viewer.html');
+});
+
+app.get('/campaign-details.html', (req, res) => {
+    res.sendFile(__dirname + '/src/campaign-details.html');
+});
+
+app.get('/custom-dashboard.html', (req, res) => {
+    res.sendFile(__dirname + '/src/custom-dashboard.html');
+});
+
+// Rota catch-all para outras páginas HTML
 app.get('/*.html', (req, res) => {
-    const fileName = req.path;
+    const fileName = req.path.split('?')[0]; // Remove query parameters
     const filePath = __dirname + '/src' + fileName;
     res.sendFile(filePath, (err) => {
         if (err) {
