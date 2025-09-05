@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Relatórios</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Dashboard de Relatórios</h1>
+        <div id="clientInfo"></div>
+    </header>
+
+    <main>
+        <div id="reportsList" class="reports-grid"></div>
+    </main>
+
+    <template id="reportCard">
+        <div class="report-card">
+            <h3 class="report-title"></h3>
+            <p class="report-subtitle"></p>
+            <div class="report-dates">
+                <span class="start-date"></span> - <span class="end-date"></span>
+            </div>
+            <div class="report-actions">
+                <button class="open-dashboard">Abrir Dashboard</button>
+                <a class="view-report" target="_blank">Ver Relatório Original</a>
+                <button class="analyze-btn">Analisar Relatório</button>
+            </div>
+            <div class="ai-analysis hidden">
+                <div class="analysis-content"></div>
+            </div>
+        </div>
+    </template>
+
+    <script src="reportsDashboard.js"></script>
+</body>
+</html>

@@ -1,26 +1,26 @@
 document.addEventListener('DOMContentLoaded', () => {
     const widgetsList = document.getElementById('widgetsList');
-    const campaignTitle = document.getElementById('campaignTitle');
+    const reportTitle = document.getElementById('campaignTitle');
     
-    // Pegar o ID da campanha da URL
+    // Pegar o ID do cliente e do relatório da URL
     const urlParams = new URLSearchParams(window.location.search);
-    const integrationId = urlParams.get('id');
-    const campaignName = urlParams.get('name');
+    const clientId = urlParams.get('clientId');
+    const reportId = urlParams.get('id');
     
     if (campaignName) {
         campaignTitle.textContent = campaignName;
     }
 
-    async function fetchWidgets(integrationId) {
+    async function fetchReportDetails(clientId, reportId) {
         try {
-            const response = await fetch(`http://localhost:3000/api/v1/integrations/${integrationId}/widgets`);
+            const response = await fetch(`http://localhost:3000/api/v1/clients/${clientId}/reports/${reportId}`);
             
             if (!response.ok) {
-                throw new Error('Erro ao buscar widgets');
+                throw new Error('Erro ao buscar detalhes do relatório');
             }
 
             const data = await response.json();
-            return data.data || [];
+            return data.data;
         } catch (error) {
             console.error('Erro:', error);
             throw error;

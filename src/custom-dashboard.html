@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Personalizado</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Adiciona Chart.js para os gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <header>
+            <h1 id="dashboardTitle">Carregando...</h1>
+            <div class="date-range" id="dateRange"></div>
+        </header>
+
+        <main class="dashboard-grid">
+            <!-- Métricas principais -->
+            <section class="metrics-section">
+                <h2>Métricas Principais</h2>
+                <div class="metrics-grid" id="mainMetrics">
+                    <!-- Será preenchido via JavaScript -->
+                </div>
+            </section>
+
+            <!-- Gráficos -->
+            <section class="charts-section">
+                <div class="chart-container">
+                    <h3>Visualizações por Período</h3>
+                    <canvas id="viewsChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3>Engajamento por Fonte</h3>
+                    <canvas id="engagementChart"></canvas>
+                </div>
+            </section>
+
+            <!-- Tabelas de dados -->
+            <section class="tables-section">
+                <div class="table-container">
+                    <h3>Top Páginas</h3>
+                    <div id="topPages"></div>
+                </div>
+                <div class="table-container">
+                    <h3>Fontes de Tráfego</h3>
+                    <div id="trafficSources"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="customDashboard.js"></script>
+</body>
+</html>

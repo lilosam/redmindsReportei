@@ -1,12 +1,31 @@
 const express = require('express');
 const cors = require('cors');
 const fetch = require('node-fetch');
+const auth = require('./src/services/auth');
 
 const app = express();
 const port = 3000;
 
+// Middleware para verificar token antes de cada requisição à API
+app.use('/api/', async (req, res, next) => {
+    try {
+        const isValidToken = await auth.checkToken();
+        if (!isValidToken) {
+            return res.status(401).json({ 
+                error: 'Token inválido ou expirado',
+                needsRefresh: true
+            });
+        }
+        next();
+    } catch (error) {
+        console.error('Erro na verificação do token:', error);
+        return res.status(401).json({ error: error.message });
+    }
+});
+
 app.use(cors());
 app.use(express.json());
+app.use(express.static('src')); // Servir arquivos estáticos da pasta src
 
 // Middleware para log de todas as requisições
 app.use((req, res, next) => {
@@ -27,7 +46,7 @@ app.get('/api/v1/clients', async (req, res) => {
         }
 
         const data = await response.json();
-        res.json(data);
+        res.json({ data: data.data || [] }); // Garantir que sempre retorne um array na propriedade data
     } catch (error) {
         console.error('Erro:', error);
         res.status(500).json({ error: 'Erro ao buscar clientes' });
@@ -53,6 +72,141 @@ app.get('/api/v1/clients/:clientId/integrations', async (req, res) => {
         res.json({ data: data.data || [] });
     } catch (error) {
         console.error('Erro:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Endpoint para buscar relatórios do cliente
+app.get('/api/v1/clients/:clientId/reports', async (req, res) => {
+    try {
+        const { clientId } = req.params;
+        const url = `https://app.reportei.com/api/v1/clients/${clientId}/reports`;
+        
+        const response = await fetch(url, {
+            headers: {
+                'Authorization': 'Bearer JRqzu0bOWhfOWekpuieXiiX06dfZtyp3zyCW5Sys'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Erro ao buscar relatórios');
+        }
+
+        const data = await response.json();
+        res.json({ data: data.data || [] });
+    } catch (error) {
+        console.error('Erro:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Endpoint para buscar detalhes de um relatório específico
+app.get('/api/v1/clients/:clientId/reports/:reportId', async (req, res) => {
+    try {
+        const { clientId, reportId } = req.params;
+        console.log('Buscando relatório específico:', { clientId, reportId });
+        
+        // Primeiro, buscar a lista de relatórios do cliente
+        const reportsUrl = `https://app.reportei.com/api/v1/clients/${clientId}/reports`;
+        console.log('Buscando lista de relatórios:', reportsUrl);
+
+        console.log('Headers da requisição:', {
+            Authorization: 'Bearer JRqzu0bOWhfOWekpuieXiiX06dfZtyp3zyCW5Sys'
+        });
+        
+        const reportsResponse = await fetch(reportsUrl, {
+            headers: {
+                'Authorization': 'Bearer JRqzu0bOWhfOWekpuieXiiX06dfZtyp3zyCW5Sys'
+            }
+        });
+
+        if (!reportsResponse.ok) {
+            throw new Error('Erro ao buscar lista de relatórios');
+        }
+
+        const responseText = await reportsResponse.text();
+        console.log('Resposta bruta:', responseText);
+
+        let reportsData;
+        try {
+            reportsData = JSON.parse(responseText);
+            console.log('Dados dos relatórios:', reportsData);
+        } catch (parseError) {
+            console.error('Erro ao fazer parse da resposta:', parseError);
+            throw new Error('Resposta inválida da API de relatórios');
+        }
+
+        if (!reportsData.data || !Array.isArray(reportsData.data)) {
+            console.error('Dados inválidos recebidos:', reportsData);
+            throw new Error('Formato de dados inválido');
+        }
+
+        // Encontrar o relatório específico na lista
+        const report = reportsData.data.find(r => r.id.toString() === reportId.toString());
+        
+        if (!report) {
+            throw new Error('Relatório não encontrado');
+        }
+
+        // Usar diretamente a URL externa do relatório
+        if (!report.external_url) {
+            throw new Error('URL externa não encontrada no relatório');
+        }
+
+        console.log('URL externa do relatório:', report.external_url);
+
+        res.json({ 
+            data: {
+                ...report,
+                external_url: report.external_url
+            }
+        });
+    } catch (error) {
+        console.error('Erro:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+const { scrapeReport } = require('./src/services/scraper');
+
+// Endpoint para buscar dados do relatório externo
+app.get('/api/proxy', async (req, res) => {
+    try {
+        const { url } = req.query;
+        
+        if (!url) {
+            throw new Error('URL não fornecida');
+        }
+
+        console.log('Iniciando scraping do relatório:', url);
+
+        // Fazer scraping dos dados
+        const scrapedData = await scrapeReport(decodeURIComponent(url));
+        console.log('Dados extraídos via scraping:', scrapedData);
+
+        // Transformar os dados para o formato esperado pelo dashboard
+        const transformedData = {
+            title: 'Relatório Personalizado',
+            pageviews: scrapedData.metrics.pageviews || 0,
+            users: scrapedData.metrics.users || 0,
+            conversion_rate: scrapedData.metrics.conversion_rate || 0,
+            avg_time: scrapedData.metrics.avg_time || 0,
+            dates: scrapedData.timeline.dates || [],
+            views_data: scrapedData.timeline.views || [],
+            direct_traffic: scrapedData.traffic_sources.direct || 0,
+            organic_traffic: scrapedData.traffic_sources.organic || 0,
+            social_traffic: scrapedData.traffic_sources.social || 0,
+            referral_traffic: scrapedData.traffic_sources.referral || 0,
+            top_pages: scrapedData.top_pages || [],
+            traffic_sources: Object.entries(scrapedData.traffic_sources || {}).map(([source, sessions]) => ({
+                source,
+                sessions
+            }))
+        };
+
+        res.json({ data: transformedData });
+    } catch (error) {
+        console.error('Erro no proxy:', error);
         res.status(500).json({ error: error.message });
     }
 });

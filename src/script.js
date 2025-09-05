@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Função para buscar os clientes
     async function fetchClients() {
         try {
-            const response = await fetch('http://localhost:3000/api/v1/clients');
+            const response = await fetch('/api/v1/clients');
 
             if (!response.ok) {
                 throw new Error('Erro ao buscar clientes');
@@ -28,102 +28,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Função para exibir os clientes
-    async function fetchCampaigns(clientId) {
-        try {
-            console.log(`Buscando campanhas para o cliente ${clientId}`);
-            const response = await fetch(`http://localhost:3000/api/v1/clients/${clientId}/integrations`);
-            
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error(`Erro na resposta: Status ${response.status}`, errorText);
-                throw new Error(`Erro ao buscar campanhas: ${response.status}`);
-            }
-
-            const data = await response.json();
-            console.log('Dados recebidos:', data);
-            
-            // Garante que sempre retornamos um array, mesmo que vazio
-            return data.data || [];
-        } catch (error) {
-            console.error('Erro detalhado:', error);
-            throw error;
-        }
-    }
-
     function displayClients(clients) {
-        console.log('Exibindo clientes:', clients);
-        clientList.innerHTML = '';
-        
         if (!Array.isArray(clients)) {
-            console.error('clients não é um array:', clients);
+            console.error('Dados de clientes inválidos:', clients);
             return;
         }
-        
-        clients.forEach(client => {
-            console.log('Criando elemento para cliente:', client);
-            const clientElement = document.createElement('div');
-            clientElement.className = 'client-item';
-            
-            const clientContent = document.createElement('div');
-            clientContent.style.cursor = 'pointer';  // Adiciona cursor pointer para indicar que é clicável
-            clientContent.innerHTML = `
-                <span class="client-name">${client.name}</span>
-                <span class="client-id">ID: ${client.id}</span>
-            `;
 
-            const campaignsList = document.createElement('div');
-            campaignsList.className = 'campaigns-list';
+        clientList.innerHTML = '';
+
+        clients.forEach(client => {
+            const clientCard = document.createElement('div');
+            clientCard.className = 'client-card';
             
-            clientElement.appendChild(clientContent);
-            clientElement.appendChild(campaignsList);
+            const clientName = document.createElement('h3');
+            clientName.textContent = client.name;
             
-            clientContent.addEventListener('click', async () => {
-                console.log('Cliente clicado:', client.name, 'ID:', client.id);
-                // Toggle campaigns list
-                const isActive = campaignsList.classList.contains('active');
-                console.log('Estado atual da lista de campanhas:', isActive ? 'ativa' : 'inativa');
-                
-                if (!isActive && !campaignsList.hasAttribute('data-loaded')) {
-                    console.log('Iniciando carregamento das campanhas...');
-                    campaignsList.innerHTML = '<div class="loading">Carregando campanhas...</div>';
-                    campaignsList.classList.add('active');
-                    
-                    try {
-                        const campaigns = await fetchCampaigns(client.id);
-                        campaignsList.innerHTML = '';
-                        
-                        if (campaigns.length === 0) {
-                            campaignsList.innerHTML = '<div class="campaign-item">Nenhuma campanha encontrada</div>';
-                        } else {
-                            campaigns.forEach(campaign => {
-                                const campaignElement = document.createElement('div');
-                                campaignElement.className = 'campaign-item';
-                                const campaignName = campaign.full_name || campaign.name || 'Sem nome';
-                                campaignElement.innerHTML = `
-                                    <div>${campaignName}</div>
-                                `;
-                                campaignElement.style.cursor = 'pointer';
-                                
-                                // Adicionar evento de clique para navegar para a página de detalhes
-                                campaignElement.addEventListener('click', () => {
-                                    const url = `campaign-details.html?id=${campaign.id}&name=${encodeURIComponent(campaignName)}`;
-                                    window.location.href = url;
-                                });
-                                
-                                campaignsList.appendChild(campaignElement);
-                            });
-                        }
-                        
-                        campaignsList.setAttribute('data-loaded', 'true');
-                    } catch (error) {
-                        campaignsList.innerHTML = '<div class="error-message">Erro ao carregar campanhas</div>';
-                    }
-                } else {
-                    campaignsList.classList.toggle('active');
-                }
+            const viewButton = document.createElement('button');
+            viewButton.textContent = 'Ver Relatórios';
+            viewButton.className = 'view-button';
+            
+            viewButton.addEventListener('click', () => {
+                window.location.href = `/reports-dashboard.html?clientId=${client.id}`;
             });
-            
-            clientList.appendChild(clientElement);
+
+            clientCard.appendChild(clientName);
+            clientCard.appendChild(viewButton);
+            clientList.appendChild(clientCard);
         });
     }
 
@@ -137,8 +67,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Event Listeners
     listClientsButton.addEventListener('click', fetchClients);
-
+    
     searchInput.addEventListener('input', (e) => {
         filterClients(e.target.value);
     });
+
+    // Carregar clientes automaticamente ao abrir a página
+    fetchClients();
 });
