@@ -114,18 +114,52 @@ function displayReports(reports) {
     
     console.log('🎉 Todos os relatórios foram processados e exibidos');
     
-    // Verificação final
-    const totalCards = reportsGrid.children.length;
-    console.log(`📊 Total de cards criados: ${totalCards}`);
-    console.log('🔍 Estado final do reportsGrid:', reportsGrid);
-    console.log('🔍 Estilo do reportsGrid:', getComputedStyle(reportsGrid));
+    // Verificação final - forçar atualização visual
+    setTimeout(() => {
+        // Verificação final
+        const totalCards = reportsGrid.children.length;
+        console.log(`📊 Total de cards criados (verificação final): ${totalCards}`);
+        console.log('🔍 Estado final do reportsGrid:', reportsGrid);
+        console.log('🔍 Estilo do reportsGrid:', getComputedStyle(reportsGrid));
+        
+        // Forçar reflow/repaint
+        reportsGrid.style.display = 'none';
+        reportsGrid.offsetHeight; // Trigger reflow
+        reportsGrid.style.display = 'grid';
+        
+        // Verificar se há algum card visível
+        const visibleCards = Array.from(reportsGrid.children).filter(card => {
+            const style = getComputedStyle(card);
+            return style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0';
+        });
+        console.log(`👁️ Cards visíveis (verificação final): ${visibleCards.length}`);
+        
+        // Se ainda não há cards visíveis, mostrar fallback
+        if (visibleCards.length === 0 && reports.length > 0) {
+            console.log('⚠️ Criando fallback HTML simples');
+            reportsGrid.innerHTML = reports.map(report => `
+                <div style="background: white; padding: 20px; border-radius: 10px; margin: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <h3 style="color: #333; margin-bottom: 10px;">${report.title}</h3>
+                    <p style="color: #666; margin-bottom: 15px;">${report.subtitle}</p>
+                    <div style="color: #888; margin-bottom: 15px;">
+                        📅 ${formatDate(report.start_date)} até ${formatDate(report.end_date)}
+                    </div>
+                    <div style="display: flex; gap: 10px; flex-direction: column;">
+                        <button onclick="window.location.href='/report-viewer.html?reportId=${report.id}&clientId=${report.client_id}&title=${encodeURIComponent(report.title)}'" 
+                                style="padding: 10px 15px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 8px; cursor: pointer;">
+                            🚀 Ver Relatório
+                        </button>
+                        <a href="${report.external_url}" target="_blank" 
+                           style="padding: 10px 15px; background: linear-gradient(135deg, #f093fb, #f5576c); color: white; text-decoration: none; border-radius: 8px; text-align: center;">
+                            🌐 Abrir no Reportei
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        }
+    }, 500);
     
-    // Verificar se há algum card visível
-    const visibleCards = Array.from(reportsGrid.children).filter(card => {
-        const style = getComputedStyle(card);
-        return style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0';
-    });
-    console.log(`👁️ Cards visíveis: ${visibleCards.length}`);
+    console.log('✅ Display reports finalizado');
 }
 
 // Função auxiliar para formatar datas

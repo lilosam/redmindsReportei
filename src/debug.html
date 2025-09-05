@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug - Teste de Relatórios</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .card { background: #f0f0f0; padding: 20px; margin: 10px 0; border-radius: 8px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .error { color: red; background: #ffe6e6; padding: 10px; border-radius: 5px; }
+        .success { color: green; background: #e6ffe6; padding: 10px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Debug - Teste de Relatórios</h1>
+    
+    <div id="status">Carregando...</div>
+    
+    <h2>Relatórios:</h2>
+    <div id="reports" class="grid"></div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const statusDiv = document.getElementById('status');
+            const reportsDiv = document.getElementById('reports');
+            
+            try {
+                // Pegar clientId da URL ou usar padrão
+                const urlParams = new URLSearchParams(window.location.search);
+                const clientId = urlParams.get('clientId') || '652309';
+                
+                statusDiv.innerHTML = `<div class="success">Buscando relatórios para cliente ${clientId}...</div>`;
+                
+                const response = await fetch(`/api/v1/clients/${clientId}/reports`);
+                
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const reports = data.data || [];
+                
+                statusDiv.innerHTML = `<div class="success">✅ ${reports.length} relatórios encontrados</div>`;
+                
+                if (reports.length === 0) {
+                    reportsDiv.innerHTML = '<div class="error">Nenhum relatório encontrado</div>';
+                    return;
+                }
+                
+                reportsDiv.innerHTML = reports.map(report => `
+                    <div class="card">
+                        <h3>${report.title}</h3>
+                        <p>${report.subtitle}</p>
+                        <p><strong>Período:</strong> ${report.start_date} até ${report.end_date}</p>
+                        <p><strong>Visualizações:</strong> ${report.views}</p>
+                        <div style="margin-top: 15px;">
+                            <a href="${report.external_url}" target="_blank" style="background: #007bff; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; margin-right: 10px;">
+                                🌐 Abrir Relatório
+                            </a>
+                            <button onclick="location.href='/report-viewer.html?reportId=${report.id}&clientId=${report.client_id}'" style="background: #28a745; color: white; padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer;">
+                                👁️ Visualizar
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+                
+            } catch (error) {
+                console.error('Erro:', error);
+                statusDiv.innerHTML = `<div class="error">❌ Erro: ${error.message}</div>`;
+            }
+        });
+    </script>
+</body>
+</html>
