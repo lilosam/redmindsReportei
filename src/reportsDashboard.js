@@ -52,6 +52,7 @@ function displayReports(reports) {
         console.log(`📄 Processando relatório ${index + 1}:`, report.title);
         
         const card = template.content.cloneNode(true);
+        console.log('📋 Template clonado');
         
         // Preenche os dados do relatório
         const titleElement = card.querySelector('.report-title');
@@ -59,10 +60,29 @@ function displayReports(reports) {
         const startDateElement = card.querySelector('.start-date');
         const endDateElement = card.querySelector('.end-date');
         
-        if (titleElement) titleElement.textContent = report.title || 'Título não disponível';
-        if (subtitleElement) subtitleElement.textContent = report.subtitle || 'Subtítulo não disponível';
-        if (startDateElement) startDateElement.textContent = formatDate(report.start_date);
-        if (endDateElement) endDateElement.textContent = formatDate(report.end_date);
+        console.log('🔍 Elementos encontrados:', {
+            title: !!titleElement,
+            subtitle: !!subtitleElement,
+            startDate: !!startDateElement,
+            endDate: !!endDateElement
+        });
+        
+        if (titleElement) {
+            titleElement.textContent = report.title || 'Título não disponível';
+            console.log('✅ Título definido:', titleElement.textContent);
+        }
+        if (subtitleElement) {
+            subtitleElement.textContent = report.subtitle || 'Subtítulo não disponível';
+            console.log('✅ Subtítulo definido:', subtitleElement.textContent);
+        }
+        if (startDateElement) {
+            startDateElement.textContent = formatDate(report.start_date);
+            console.log('✅ Data inicial definida:', startDateElement.textContent);
+        }
+        if (endDateElement) {
+            endDateElement.textContent = formatDate(report.end_date);
+            console.log('✅ Data final definida:', endDateElement.textContent);
+        }
         
         // Configura o botão de abrir dashboard
         const openButton = card.querySelector('.open-dashboard');
@@ -74,19 +94,38 @@ function displayReports(reports) {
                 const encodedTitle = encodeURIComponent(report.title || 'Relatório');
                 window.location.href = `/report-viewer.html?reportId=${report.id}&clientId=${report.client_id}&title=${encodedTitle}`;
             });
+            console.log('✅ Botão configurado');
         }
 
         // Configura o link para visualizar relatório
         const viewReportLink = card.querySelector('.view-report');
         if (viewReportLink) {
             viewReportLink.href = report.external_url;
+            console.log('✅ Link configurado:', viewReportLink.href);
         }
 
         reportsGrid.appendChild(card);
         console.log(`✅ Relatório ${index + 1} adicionado à lista`);
+        
+        // Verificar se o card foi realmente adicionado
+        const addedCard = reportsGrid.lastElementChild;
+        console.log('🔍 Último elemento adicionado:', addedCard ? addedCard.className : 'Nenhum');
     });
     
     console.log('🎉 Todos os relatórios foram processados e exibidos');
+    
+    // Verificação final
+    const totalCards = reportsGrid.children.length;
+    console.log(`📊 Total de cards criados: ${totalCards}`);
+    console.log('🔍 Estado final do reportsGrid:', reportsGrid);
+    console.log('🔍 Estilo do reportsGrid:', getComputedStyle(reportsGrid));
+    
+    // Verificar se há algum card visível
+    const visibleCards = Array.from(reportsGrid.children).filter(card => {
+        const style = getComputedStyle(card);
+        return style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0';
+    });
+    console.log(`👁️ Cards visíveis: ${visibleCards.length}`);
 }
 
 // Função auxiliar para formatar datas
