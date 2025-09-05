@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Simples</title>
+</head>
+<body>
+    <h1>🔍 Debug Simples - Teste</h1>
+    <p>Se você está vendo esta página, o servidor está funcionando!</p>
+    <p>Timestamp: <span id="timestamp"></span></p>
+    
+    <h2>Testes:</h2>
+    <div id="results"></div>
+    
+    <script>
+        document.getElementById('timestamp').textContent = new Date().toISOString();
+        
+        async function runTests() {
+            const results = document.getElementById('results');
+            
+            try {
+                // Teste 1: Health check
+                const healthResponse = await fetch('/api/health');
+                const healthData = await healthResponse.json();
+                results.innerHTML += `<p>✅ Health check: ${healthData.status}</p>`;
+                
+                // Teste 2: Listar arquivos
+                const filesResponse = await fetch('/api/debug/files');
+                const filesData = await filesResponse.json();
+                results.innerHTML += `<p>✅ Arquivos encontrados: ${filesData.files.length}</p>`;
+                results.innerHTML += `<pre>${JSON.stringify(filesData, null, 2)}</pre>`;
+                
+            } catch (error) {
+                results.innerHTML += `<p>❌ Erro: ${error.message}</p>`;
+            }
+        }
+        
+        runTests();
+    </script>
+</body>
+</html>

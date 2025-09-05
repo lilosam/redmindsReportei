@@ -1,12 +1,21 @@
 const express = require('express');
 const cors = require('cors');
 const fetch = require('node-fetch');
+const fs = require('fs');
+const path = require('path');
 
 const app = express();
 const port = 3000;
 
 app.use(cors());
 app.use(express.json());
+
+// Middleware para log de todas as requisições (deve estar antes das rotas)
+app.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+    next();
+});
+
 app.use(express.static('src')); // Servir arquivos estáticos da pasta src
 
 // Rotas específicas para arquivos estáticos (para garantir que funcionem no Vercel)
@@ -19,7 +28,19 @@ app.get('/script.js', (req, res) => {
 });
 
 app.get('/reportsDashboard.js', (req, res) => {
-    res.sendFile(__dirname + '/src/reportsDashboard.js');
+    console.log('🔍 Requisição para reportsDashboard.js');
+    console.log('__dirname:', __dirname);
+    const filePath = __dirname + '/src/reportsDashboard.js';
+    console.log('Caminho do arquivo:', filePath);
+    
+    res.sendFile(filePath, (err) => {
+        if (err) {
+            console.error('❌ Erro ao servir reportsDashboard.js:', err);
+            res.status(404).send('Arquivo JavaScript não encontrado');
+        } else {
+            console.log('✅ reportsDashboard.js servido com sucesso');
+        }
+    });
 });
 
 app.get('/report-viewer.js', (req, res) => {
@@ -61,7 +82,34 @@ app.get('/custom-dashboard.html', (req, res) => {
 });
 
 app.get('/debug.html', (req, res) => {
-    res.sendFile(__dirname + '/src/debug.html');
+    console.log('🔍 Requisição para debug.html');
+    console.log('__dirname:', __dirname);
+    const filePath = __dirname + '/src/debug.html';
+    console.log('Caminho do arquivo:', filePath);
+    
+    res.sendFile(filePath, (err) => {
+        if (err) {
+            console.error('❌ Erro ao servir debug.html:', err);
+            res.status(404).send('Página debug.html não encontrada');
+        } else {
+            console.log('✅ debug.html servido com sucesso');
+        }
+    });
+});
+
+app.get('/debug-simple.html', (req, res) => {
+    console.log('🔍 Requisição para debug-simple.html');
+    const filePath = __dirname + '/src/debug-simple.html';
+    console.log('Caminho do arquivo:', filePath);
+    
+    res.sendFile(filePath, (err) => {
+        if (err) {
+            console.error('❌ Erro ao servir debug-simple.html:', err);
+            res.status(404).send('Página não encontrada');
+        } else {
+            console.log('✅ debug-simple.html servido com sucesso');
+        }
+    });
 });
 
 // Rota catch-all para outras páginas HTML
@@ -80,18 +128,17 @@ app.get('/*.html', (req, res) => {
 app.get('/*.js', (req, res) => {
     const fileName = req.path;
     const filePath = __dirname + '/src' + fileName;
+    console.log('🔍 Rota genérica JS - arquivo:', fileName);
+    console.log('🔍 Caminho completo:', filePath);
+    
     res.sendFile(filePath, (err) => {
         if (err) {
-            console.error('Erro ao servir arquivo JS:', fileName, err);
+            console.error('❌ Erro ao servir arquivo JS (rota genérica):', fileName, err);
             res.status(404).send('Arquivo JavaScript não encontrado');
+        } else {
+            console.log('✅ Arquivo JS servido com sucesso (rota genérica):', fileName);
         }
     });
-});
-
-// Middleware para log de todas as requisições
-app.use((req, res, next) => {
-    console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
-    next();
 });
 
 app.get('/api/v1/clients', async (req, res) => {
@@ -235,6 +282,31 @@ app.get('/api/health', (req, res) => {
         message: 'Servidor funcionando',
         timestamp: new Date().toISOString()
     });
+});
+
+// Rota de debug para listar arquivos disponíveis
+app.get('/api/debug/files', (req, res) => {
+    try {
+        const srcPath = path.join(__dirname, 'src');
+        console.log('🔍 Listando arquivos em:', srcPath);
+        
+        const files = fs.readdirSync(srcPath, { withFileTypes: true });
+        const fileList = files.map(file => ({
+            name: file.name,
+            isDirectory: file.isDirectory(),
+            path: '/src/' + file.name
+        }));
+        
+        res.json({
+            srcPath: srcPath,
+            __dirname: __dirname,
+            files: fileList,
+            timestamp: new Date().toISOString()
+        });
+    } catch (error) {
+        console.error('❌ Erro ao listar arquivos:', error);
+        res.status(500).json({ error: error.message });
+    }
 });
 
 app.get('/api/v1/integrations/:integrationId/widgets', async (req, res) => {
