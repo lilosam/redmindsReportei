@@ -137,6 +137,15 @@ function formatDate(dateString) {
 document.addEventListener('DOMContentLoaded', () => {
     console.log('🚀 Reports Dashboard - Inicializando...');
     
+    // Configurar botão de voltar
+    const backButton = document.getElementById('backButton');
+    if (backButton) {
+        backButton.addEventListener('click', () => {
+            window.location.href = '/';
+        });
+        console.log('✅ Botão de voltar configurado');
+    }
+    
     // Pegar o ID do cliente da URL
     const urlParams = new URLSearchParams(window.location.search);
     const clientId = urlParams.get('clientId');

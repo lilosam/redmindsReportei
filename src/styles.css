@@ -816,6 +816,16 @@
 
 /* =============== DESIGN SYSTEM MODERNO =============== */
 
+.dashboard-title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
 :root {
     /* Cores Primárias */
     --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
