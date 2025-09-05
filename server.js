@@ -9,6 +9,11 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('src')); // Servir arquivos estáticos da pasta src
 
+// Rota para a página inicial
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/src/index.html');
+});
+
 // Middleware para log de todas as requisições
 app.use((req, res, next) => {
     console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
