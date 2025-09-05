@@ -1,5 +1,7 @@
 /* =============== LAYOUT PRINCIPAL =============== */
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
 .main-container {
     min-height: 100vh;
     display: flex;
@@ -813,8 +815,6 @@
 }
 
 /* =============== DESIGN SYSTEM MODERNO =============== */
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 :root {
     /* Cores Primárias */
