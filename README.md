@@ -1,22 +1,23 @@
-# Reportei Analytics Dashboard
+# Redminds Reportei - Dashboard de Relatórios
 
-Interface personalizada para visualização de métricas e análises do Reportei, com suporte a web scraping para extração de dados.
+Sistema de dashboard para visualização de relatórios da plataforma Reportei, com interface iframe para visualização completa e navegação simplificada.
 
 ## 🚀 Funcionalidades
 
-- Visualização de relatórios do Reportei
-- Extração automática de dados via web scraping
-- Dashboard personalizado com métricas principais
-- Interface simplificada e intuitiva
-- Suporte a múltiplos tipos de relatórios
+- **Lista de Clientes**: Visualização de todos os clientes disponíveis
+- **Relatórios por Cliente**: Acesso aos relatórios específicos de cada cliente
+- **Visualizador de Relatórios**: Sistema de iframe para visualização completa dos relatórios
+- **Interface Responsiva**: Design adaptável para desktop e mobile
+- **Navegação Intuitiva**: Sistema de navegação simples e eficiente
 
-## 📋 Pré-requisitos
+## 🛠️ Instalação e Configuração
 
-- Node.js >= 16.0.0
-- NPM >= 8.0.0
-- Token de acesso ao Reportei
+### Pré-requisitos
+- Node.js (versão 14 ou superior)
+- NPM ou Yarn
+- Token de acesso da API Reportei
 
-## 🔧 Instalação
+### Instalação
 
 1. Clone o repositório:
 ```bash
@@ -29,101 +30,126 @@ cd redmindsReportei
 npm install
 ```
 
-3. Configure as variáveis de ambiente:
-   - Crie um arquivo `.env` na raiz do projeto
-   - Adicione seu token do Reportei:
-```env
-REPORTEI_API_TOKEN=seu_token_aqui
-PORT=3000
-```
+3. Configure o token da API:
+   - Abra o arquivo `server.js`
+   - Localize a linha `const REPORTEI_TOKEN = 'SEU_TOKEN_AQUI';`
+   - Substitua `'SEU_TOKEN_AQUI'` pelo seu token válido da API Reportei
 
 4. Inicie o servidor:
 ```bash
 npm start
 ```
 
-## 🛠️ Tecnologias
-
-- **Backend**
-  - Express.js - Framework web
-  - Puppeteer - Web scraping e automação
-  - CORS - Segurança e comunicação cross-origin
-  - Dotenv - Gerenciamento de variáveis de ambiente
-
-- **Frontend**
-  - HTML5
-  - CSS3
-  - JavaScript (Vanilla)
-  - Fetch API para requisições
+5. Acesse a aplicação:
+   - Abra o navegador e vá para `http://localhost:3000`
 
 ## 📁 Estrutura do Projeto
 
 ```
 redmindsReportei/
-├── src/
-│   ├── campaign-details.html
-│   ├── campaign-details.js
-│   ├── index.html
-│   ├── script.js
-│   ├── styles.css
-│   └── services/
-│       └── scraper.js
-├── server.js
-├── requirements.txt
-└── README.md
+├── src/                          # Frontend da aplicação
+│   ├── index.html               # Página principal
+│   ├── reports.html             # Página de relatórios
+│   ├── report-viewer.html       # Visualizador de relatório em iframe
+│   ├── styles.css               # Estilos da aplicação
+│   ├── app.js                   # JavaScript principal
+│   ├── reportsDashboard.js      # Lógica dos relatórios
+│   └── report-viewer.js         # Lógica do visualizador
+├── server.js                    # Servidor backend
+├── package.json                 # Dependências e scripts
+└── README.md                    # Este arquivo
 ```
 
-## 🔍 Endpoints da API
+## � Como Usar
 
-- `GET /api/proxy` - Proxy para requisições ao Reportei
-- `GET /api/v1/clients/:clientId/reports` - Lista relatórios de um cliente
-- `GET /api/v1/reports/:reportId` - Obtém dados de um relatório específico
+### 1. Visualizar Clientes
+- Na página inicial, clique em "Listar Clientes"
+- Use a barra de pesquisa para filtrar clientes específicos
+- Clique em um cliente para ver seus relatórios
 
-## 🔐 Segurança
+### 2. Acessar Relatórios
+- Após selecionar um cliente, você verá a lista de relatórios disponíveis
+- Cada relatório mostra:
+  - Título e subtítulo
+  - Período de dados (data de início e fim)
+  - Ações disponíveis
 
-- Autenticação via token do Reportei
-- Headers de segurança configurados
-- Bypass de detecção de automação para scraping
-- Tratamento de erros robusto
+### 3. Visualizar Relatório
+- **"Ver Relatório"**: Abre o relatório em uma nova página (iframe integrado)
+- **"Abrir no Reportei"**: Abre o relatório diretamente no site do Reportei
 
-## ⚙️ Configurações Avançadas
+### 4. Navegação
+- Use o botão "Voltar" para retornar à lista anterior
+- O título da página sempre mostra onde você está no sistema
 
-### Configuração do Scraper
+## 🔌 API Endpoints
 
-O scraper pode ser configurado através dos seguintes parâmetros:
-- Timeout de navegação
-- User agents rotativos
-- Headers personalizados
-- Modo headless/não-headless
+O servidor atua como proxy para a API do Reportei:
 
-### Otimizações
+- `GET /api/v1/clients` - Lista todos os clientes
+- `GET /api/v1/clients/:id/reports` - Lista relatórios de um cliente específico
+- `GET /health` - Verificação de saúde do servidor
 
-- Cache de requisições
-- Bloqueio de recursos não essenciais
-- Sistema de retry para falhas
-- Logs detalhados para debug
+## ⚙️ Configurações
 
-## 📝 Notas de Desenvolvimento
+### Token da API
+O token deve ser configurado no arquivo `server.js`:
+```javascript
+const REPORTEI_TOKEN = 'seu_token_aqui';
+```
 
-- O sistema utiliza web scraping como alternativa à API oficial
-- Implementa técnicas anti-detecção para maior confiabilidade
-- Suporta diferentes tipos de relatórios e dashboards
-- Interface responsiva e adaptável
+### Porta do Servidor
+Por padrão, o servidor roda na porta 3000. Para alterar:
+```javascript
+const PORT = process.env.PORT || 3000;
+```
 
-## ⚠️ Limitações Conhecidas
+## 🎨 Personalização
 
-- O scraping pode ser afetado por mudanças na interface do Reportei
-- Alguns relatórios podem requerer adaptações específicas
-- Performance pode variar dependendo da conexão e carga do servidor
+### Estilos
+Os estilos estão centralizados no arquivo `src/styles.css` e incluem:
+- Layout responsivo para todas as telas
+- Design moderno com cards e grid system
+- Animações suaves e transições
+- Tema consistente em azul e cinza
 
-## 🤝 Contribuindo
+### Tecnologias Utilizadas
+- **Backend**: Node.js, Express.js, CORS
+- **Frontend**: HTML5, CSS3, JavaScript (Vanilla)
+- **Visualização**: iframes para relatórios externos
+- **API**: Fetch API para comunicação com backend
 
-1. Faça um fork do projeto
-2. Crie sua feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
+## 🐛 Solução de Problemas
+
+### Erro de Token
+- Verifique se o token está correto no arquivo `server.js`
+- Confirme se o token tem as permissões necessárias
+
+### Erro de CORS
+- O servidor já está configurado para lidar com CORS
+- Verifique se não há proxy ou firewall bloqueando as requisições
+
+### Relatórios não carregam
+- Verifique a conexão com a internet
+- Confirme se a API do Reportei está funcionando
+- Verifique os logs do servidor no terminal
+
+### Performance
+- Os relatórios são carregados via iframe para melhor performance
+- Evite abrir muitos relatórios simultaneamente
+
+## 📝 Funcionalidades Futuras
+
+- Análise automatizada com IA
+- Exportação de relatórios
+- Dashboard personalizado
+- Cache de dados para melhor performance
+- Notificações em tempo real
 
 ## 📄 Licença
 
-Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
+Este projeto é de uso interno da Redminds.
+
+## 🤝 Suporte
+
+Para suporte técnico, entre em contato com a equipe de desenvolvimento.

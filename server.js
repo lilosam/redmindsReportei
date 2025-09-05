@@ -1,27 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const fetch = require('node-fetch');
-const auth = require('./src/services/auth');
 
 const app = express();
 const port = 3000;
-
-// Middleware para verificar token antes de cada requisição à API
-app.use('/api/', async (req, res, next) => {
-    try {
-        const isValidToken = await auth.checkToken();
-        if (!isValidToken) {
-            return res.status(401).json({ 
-                error: 'Token inválido ou expirado',
-                needsRefresh: true
-            });
-        }
-        next();
-    } catch (error) {
-        console.error('Erro na verificação do token:', error);
-        return res.status(401).json({ error: error.message });
-    }
-});
 
 app.use(cors());
 app.use(express.json());
@@ -167,48 +149,13 @@ app.get('/api/v1/clients/:clientId/reports/:reportId', async (req, res) => {
     }
 });
 
-const { scrapeReport } = require('./src/services/scraper');
-
-// Endpoint para buscar dados do relatório externo
-app.get('/api/proxy', async (req, res) => {
-    try {
-        const { url } = req.query;
-        
-        if (!url) {
-            throw new Error('URL não fornecida');
-        }
-
-        console.log('Iniciando scraping do relatório:', url);
-
-        // Fazer scraping dos dados
-        const scrapedData = await scrapeReport(decodeURIComponent(url));
-        console.log('Dados extraídos via scraping:', scrapedData);
-
-        // Transformar os dados para o formato esperado pelo dashboard
-        const transformedData = {
-            title: 'Relatório Personalizado',
-            pageviews: scrapedData.metrics.pageviews || 0,
-            users: scrapedData.metrics.users || 0,
-            conversion_rate: scrapedData.metrics.conversion_rate || 0,
-            avg_time: scrapedData.metrics.avg_time || 0,
-            dates: scrapedData.timeline.dates || [],
-            views_data: scrapedData.timeline.views || [],
-            direct_traffic: scrapedData.traffic_sources.direct || 0,
-            organic_traffic: scrapedData.traffic_sources.organic || 0,
-            social_traffic: scrapedData.traffic_sources.social || 0,
-            referral_traffic: scrapedData.traffic_sources.referral || 0,
-            top_pages: scrapedData.top_pages || [],
-            traffic_sources: Object.entries(scrapedData.traffic_sources || {}).map(([source, sessions]) => ({
-                source,
-                sessions
-            }))
-        };
-
-        res.json({ data: transformedData });
-    } catch (error) {
-        console.error('Erro no proxy:', error);
-        res.status(500).json({ error: error.message });
-    }
+// Endpoint simples para informações do sistema
+app.get('/api/health', (req, res) => {
+    res.json({ 
+        status: 'ok', 
+        message: 'Servidor funcionando',
+        timestamp: new Date().toISOString()
+    });
 });
 
 app.get('/api/v1/integrations/:integrationId/widgets', async (req, res) => {

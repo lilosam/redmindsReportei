@@ -6,9 +6,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     const clientId = urlParams.get('clientId');
     const reportId = urlParams.get('id');
+    const integrationId = urlParams.get('integrationId'); // Adicionado
+    const campaignName = urlParams.get('name'); // Adicionado
     
-    if (campaignName) {
-        campaignTitle.textContent = campaignName;
+    if (campaignName && reportTitle) {
+        reportTitle.textContent = campaignName;
+    }
+
+    async function fetchWidgets(integrationId) {
+        try {
+            const response = await fetch(`http://localhost:3000/api/v1/integrations/${integrationId}/widgets`);
+            
+            if (!response.ok) {
+                throw new Error('Erro ao buscar widgets');
+            }
+
+            const data = await response.json();
+            return data.data || [];
+        } catch (error) {
+            console.error('Erro:', error);
+            throw error;
+        }
     }
 
     async function fetchReportDetails(clientId, reportId) {

@@ -3,33 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard de Relatórios</title>
+    <title>📈 Relatórios - Redminds Reportei</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <meta name="description" content="Visualização moderna de relatórios Reportei">
 </head>
 <body>
-    <header>
-        <h1>Dashboard de Relatórios</h1>
-        <div id="clientInfo"></div>
-    </header>
-
-    <main>
-        <div id="reportsList" class="reports-grid"></div>
-    </main>
+    <div class="container">
+        <div class="header">
+            <button onclick="window.location.href='/'" class="back-button">
+                ← Voltar
+            </button>
+            <h1 style="margin: 0; font-size: 1.5rem; font-weight: 700; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                📈 Dashboard de Relatórios
+            </h1>
+        </div>
+        
+        <main>
+            <div id="reportsList" class="reports-grid"></div>
+        </main>
+    </div>
 
     <template id="reportCard">
         <div class="report-card">
             <h3 class="report-title"></h3>
             <p class="report-subtitle"></p>
             <div class="report-dates">
-                <span class="start-date"></span> - <span class="end-date"></span>
+                📅 <span class="start-date"></span> até <span class="end-date"></span>
             </div>
             <div class="report-actions">
-                <button class="open-dashboard">Abrir Dashboard</button>
-                <a class="view-report" target="_blank">Ver Relatório Original</a>
-                <button class="analyze-btn">Analisar Relatório</button>
-            </div>
-            <div class="ai-analysis hidden">
-                <div class="analysis-content"></div>
+                <button class="open-dashboard">🚀 Ver Relatório</button>
+                <a class="view-report" target="_blank">🌐 Abrir no Reportei</a>
             </div>
         </div>
     </template>

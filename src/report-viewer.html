@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 Visualizador - Redminds Reportei</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <meta name="description" content="Visualizador avançado de relatórios em tela cheia">
+</head>
+<body>
+    <div class="report-viewer-container">
+        <div class="report-viewer-header">
+            <a href="#" class="back-to-reports" id="backBtn">
+                ← Voltar aos Relatórios
+            </a>
+            <h1 class="report-viewer-title" id="reportTitle">
+                🔍 Carregando Relatório...
+            </h1>
+        </div>
+        
+        <div class="report-iframe-container">
+            <iframe id="reportIframe" class="report-iframe" style="display: none;"></iframe>
+            
+            <div class="iframe-loading" id="loadingMessage">
+                <div class="iframe-spinner"></div>
+                <div class="iframe-loading-text">✨ Carregando seu relatório...</div>
+            </div>
+            
+            <div class="iframe-error" id="errorMessage" style="display: none;">
+                <div class="error-icon">⚠️</div>
+                <h2 class="error-title">Ops! Algo deu errado</h2>
+                <p class="error-message">
+                    <span id="errorText">Não foi possível carregar o relatório. Isso pode acontecer devido a problemas de conectividade ou restrições de segurança do navegador.</span>
+                </p>
+                <button class="retry-button" onclick="location.reload()">
+                    🔄 Tentar Novamente
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="report-viewer.js"></script>
+</body>
+</html>

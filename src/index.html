@@ -3,16 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Clientes</title>
+    <title>🚀 Redminds Reportei - Dashboard Analytics</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <meta name="description" content="Dashboard moderno para análise de relatórios Reportei">
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <button id="listClients">Listar todos os clientes</button>
-            <input type="text" id="searchInput" placeholder="Buscar cliente..." class="search-input">
+    <div class="main-container">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    🚀 Redminds Reportei
+                </h1>
+                <p class="hero-subtitle">
+                    Dashboard Analytics para visualização de relatórios
+                </p>
+                <div class="hero-stats" id="heroStats" style="display: none;">
+                    <div class="stat-item">
+                        <span class="stat-number" id="totalClients">0</span>
+                        <span class="stat-label">Clientes</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="totalReports">0</span>
+                        <span class="stat-label">Relatórios</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">24/7</span>
+                        <span class="stat-label">Disponível</span>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div id="clientList" class="client-list"></div>
+
+        <!-- Main Content -->
+        <div class="container">
+            <div class="content-header">
+                <div class="header-controls">
+                    <button id="listClients" class="primary-button">
+                        📊 Carregar Clientes
+                    </button>
+                    <div class="search-container">
+                        <input type="text" id="searchInput" placeholder="🔍 Buscar cliente..." class="search-input">
+                        <div class="search-results-count" id="searchCount" style="display: none;">
+                            <span id="resultsCount">0</span> resultados encontrados
+                        </div>
+                    </div>
+                </div>
+                <div class="view-controls" id="viewControls" style="display: none;">
+                    <button class="view-toggle active" data-view="grid" title="Visualização em Grade">
+                        📱
+                    </button>
+                    <button class="view-toggle" data-view="list" title="Visualização em Lista">
+                        📋
+                    </button>
+                </div>
+            </div>
+            
+            <div id="clientList" class="clients-grid"></div>
+            
+            <!-- Loading State -->
+            <div id="loadingState" class="loading-state" style="display: none;">
+                <div class="loading-spinner"></div>
+                <p>Carregando clientes...</p>
+            </div>
+            
+            <!-- Empty State -->
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <div class="empty-icon">📭</div>
+                <h3>Nenhum cliente encontrado</h3>
+                <p>Clique em "Carregar Clientes" para buscar os dados</p>
+            </div>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>

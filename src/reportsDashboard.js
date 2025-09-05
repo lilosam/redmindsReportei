@@ -37,60 +37,24 @@ function displayReports(reports) {
         
         // Configura o botão de abrir dashboard
         const openButton = card.querySelector('.open-dashboard');
+        openButton.textContent = 'Ver Relatório';
         openButton.addEventListener('click', () => {
-            // Redireciona para nossa página de dashboard personalizado
-            window.location.href = `/custom-dashboard.html?reportId=${report.id}&clientId=${report.client_id}&startDate=${report.start_date}&endDate=${report.end_date}`;
+            // Redireciona para o visualizador de relatório com iframe
+            const encodedTitle = encodeURIComponent(report.title || 'Relatório');
+            window.location.href = `/report-viewer.html?reportId=${report.id}&clientId=${report.client_id}&title=${encodedTitle}`;
         });
 
         // Configura o link para visualizar relatório
         const viewReportLink = card.querySelector('.view-report');
         viewReportLink.href = report.external_url;
 
-        // Configura o botão de análise
-        const analyzeBtn = card.querySelector('.analyze-btn');
-        analyzeBtn.addEventListener('click', () => analyzeReport(report.id, card));
-
         reportsGrid.appendChild(card);
     });
-}
-
-// Função para analisar um relatório específico usando IA
-async function analyzeReport(reportId, cardElement) {
-    try {
-        const analyzeBtn = cardElement.querySelector('.analyze-btn');
-        const aiAnalysis = cardElement.querySelector('.ai-analysis');
-        const analysisContent = cardElement.querySelector('.analysis-content');
-
-        analyzeBtn.disabled = true;
-        analyzeBtn.textContent = 'Analisando...';
-
-        const response = await fetch(`/api/reports/${reportId}/analyze`);
-        const data = await response.json();
-
-        // Exibe os insights da IA
-        analysisContent.innerHTML = formatAnalysis(data.analysis);
-        aiAnalysis.classList.remove('hidden');
-
-        analyzeBtn.textContent = 'Atualizar Análise';
-        analyzeBtn.disabled = false;
-    } catch (error) {
-        console.error('Erro ao analisar relatório:', error);
-        alert('Erro ao analisar relatório. Por favor, tente novamente.');
-    }
 }
 
 // Função auxiliar para formatar datas
 function formatDate(dateString) {
     return new Date(dateString).toLocaleDateString('pt-BR');
-}
-
-// Função para formatar a análise da IA
-function formatAnalysis(analysis) {
-    if (!analysis || !analysis.insights) return '';
-
-    return analysis.insights
-        .map(insight => `<p class="insight">${insight}</p>`)
-        .join('');
 }
 
 // Inicialização
